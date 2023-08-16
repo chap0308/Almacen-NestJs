@@ -1,0 +1,119 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  id: ID!
+  name: String!
+  product: Product!
+}
+
+type Product {
+  id: ID!
+  description: String!
+  category: Category!
+  stock: Int!
+  image: String!
+  priceCost: Float!
+  gain: Float!
+  saleUnitPrice: Float!
+}
+
+type Client {
+  id: ID!
+  fullname: String!
+  email: String!
+  phone: String!
+}
+
+type Supplier {
+  id: ID!
+  fullname: String!
+  email: String!
+  phone: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  fullName: String!
+  rol: String!
+  phone: String!
+}
+
+type Query {
+  products(offset: Int = 0, limit: Int = 10, search: String): [Product!]!
+  product(id: ID!): Product!
+  clients: [Client!]!
+  client(id: Int!): Client!
+  supplier(id: Int!): Supplier!
+  users: [User!]!
+  user(id: Int!): User!
+  categories: [Category!]!
+}
+
+type Mutation {
+  createProduct(createProductInput: CreateProductInput!): Product!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
+  removeProduct(id: ID!): String!
+  createClient(createClientInput: CreateClientInput!): Client!
+  updateClient(updateClientInput: UpdateClientInput!): Client!
+  removeClient(id: Int!): Client!
+  createSupplier(createSupplierInput: CreateSupplierInput!): Supplier!
+  updateSupplier(updateSupplierInput: UpdateSupplierInput!): Supplier!
+  removeSupplier(id: Int!): Supplier!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+}
+
+input CreateProductInput {
+  description: String!
+  image: String!
+  categoryId: ID
+}
+
+input UpdateProductInput {
+  description: String
+  image: String
+  categoryId: ID
+  id: ID!
+}
+
+input CreateClientInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateClientInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateSupplierInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSupplierInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateUserInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateUserInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCategoryInput {
+  name: String!
+}
