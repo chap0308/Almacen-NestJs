@@ -39,7 +39,7 @@ export class ProductsResolver {
     return this.productsService.update(updateProductInput.id, updateProductInput);
   }
 
-  @Mutation(() => String, { name: 'removeProduct' })
+  @Mutation(() => String, { name: 'removeProduct' })//! colocar String, para recibir un mensaje cuando se elimine
   async removeProduct(
     @Args('id', { type: () => ID }) id: string
     ): Promise<string> {

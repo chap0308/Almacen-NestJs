@@ -36,7 +36,7 @@ type Supplier {
 type User {
   id: ID!
   email: String!
-  fullName: String!
+  fullname: String!
   rol: String!
   phone: String!
 }
@@ -44,8 +44,8 @@ type User {
 type Query {
   products(offset: Int = 0, limit: Int = 10, search: String): [Product!]!
   product(id: ID!): Product!
-  clients: [Client!]!
-  client(id: Int!): Client!
+  clients(offset: Int = 0, limit: Int = 10, search: String): [Client!]!
+  client(id: ID!): Client!
   supplier(id: Int!): Supplier!
   users: [User!]!
   user(id: Int!): User!
@@ -58,7 +58,7 @@ type Mutation {
   removeProduct(id: ID!): String!
   createClient(createClientInput: CreateClientInput!): Client!
   updateClient(updateClientInput: UpdateClientInput!): Client!
-  removeClient(id: Int!): Client!
+  removeClient(id: ID!): String!
   createSupplier(createSupplierInput: CreateSupplierInput!): Supplier!
   updateSupplier(updateSupplierInput: UpdateSupplierInput!): Supplier!
   removeSupplier(id: Int!): Supplier!
@@ -82,14 +82,16 @@ input UpdateProductInput {
 }
 
 input CreateClientInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  fullname: String!
+  email: String!
+  phone: String!
 }
 
 input UpdateClientInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  fullname: String
+  email: String
+  phone: String
+  id: ID!
 }
 
 input CreateSupplierInput {

@@ -1,5 +1,6 @@
 import { InputType, Field, ID } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, IsUUID, MinLength } from 'class-validator';
 import { Category } from 'src/category/entities/category.entity';
 
 @InputType()
@@ -7,6 +8,8 @@ export class CreateProductInput {
   @Field(() => String)
   @IsNotEmpty()
   @IsString()
+  @Transform( ({value}) => value.trim() )
+  @MinLength(1)
   description: string;
 
   @Field(() => String)

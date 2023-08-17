@@ -12,7 +12,7 @@ export class Client {
   @Field( () => String )
   fullname: string;
 
-  @Column()
+  @Column({ unique: true })
   @Field( () => String )
   email: string;
 

@@ -18,7 +18,7 @@ export class User {
 
   @Column()
   @Field( () => String )
-  fullName: string;
+  fullname: string;
 
   @Column()
   @Field( () => String )

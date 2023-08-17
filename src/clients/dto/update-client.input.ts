@@ -1,8 +1,10 @@
+import { IsUUID } from 'class-validator';
 import { CreateClientInput } from './create-client.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateClientInput extends PartialType(CreateClientInput) {
-  @Field(() => Int)
-  id: number;
+  @Field(() => ID)
+  @IsUUID()
+  id: string;
 }
