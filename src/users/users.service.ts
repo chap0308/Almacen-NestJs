@@ -59,10 +59,18 @@ export class UsersService {
 
   async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
     await this.findOne( id );
-    const user = await this.usersRepository.preload( updateUserInput );
-    if ( !user ) throw new NotFoundException(`User with id: ${ id } not found`);
+    try {
+      const user = await this.usersRepository.preload({
+        ...updateUserInput,
+        password: updateUserInput.password ? bcrypt.hashSync( updateUserInput.password, 10 ) : updateUserInput.password,
+        id
+      });
 
-    return this.usersRepository.save( user );
+      return await this.usersRepository.save( user );
+
+    } catch (error) {
+      this.handleDBErrors( error );
+    }
   }
 
   async remove(id: string): Promise<string> {
