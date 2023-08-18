@@ -8,6 +8,56 @@ type Category {
   product: Product!
 }
 
+type Supplier {
+  id: ID!
+  fullname: String!
+  email: String!
+  phone: String!
+  purchase: [PurchaseOrder!]!
+}
+
+type PurchaseOrder {
+  id: ID!
+  supplier: Supplier!
+  date: String!
+  fullPurchasePrice: Float!
+  detailPurchaseOrder: [DetailPurchaseOrder!]!
+}
+
+type DetailPurchaseOrder {
+  id: ID!
+  product: Product!
+  purchaseOrder: PurchaseOrder!
+  inputQuantity: Int!
+  unitPrice: Float!
+  purchasePrice: Float!
+}
+
+type Client {
+  id: ID!
+  fullname: String!
+  email: String!
+  phone: String!
+  sales: [SalesOrder!]!
+}
+
+type SalesOrder {
+  id: ID!
+  client: Client!
+  date: String!
+  fullSalePrice: Float!
+  detailSalesOrder: [DetailSalesOrder!]!
+}
+
+type DetailSalesOrder {
+  id: ID!
+  product: Product!
+  salesOrder: SalesOrder!
+  outputQuantity: Int!
+  unitPrice: Float!
+  salePrice: Float!
+}
+
 type Product {
   id: ID!
   description: String!
@@ -17,6 +67,8 @@ type Product {
   priceCost: Float!
   gain: Float!
   saleUnitPrice: Float!
+  detailPurchaseOrder: [DetailPurchaseOrder!]!
+  detailSalesOrder: [DetailSalesOrder!]!
 }
 
 type User {
@@ -27,20 +79,6 @@ type User {
   phone: String!
   isActive: Boolean!
   lastUpdateBy: User
-}
-
-type Client {
-  id: ID!
-  fullname: String!
-  email: String!
-  phone: String!
-}
-
-type Supplier {
-  id: ID!
-  fullname: String!
-  email: String!
-  phone: String!
 }
 
 type AuthResponse {
@@ -59,6 +97,14 @@ type Query {
   user(id: ID!): User!
   categories: [Category!]!
   revalite: AuthResponse!
+  purchaseOrders: [PurchaseOrder!]!
+  purchaseOrder(id: Int!): PurchaseOrder!
+  salesOrders: [SalesOrder!]!
+  salesOrder(id: Int!): SalesOrder!
+  detailPurchaseOrders: [DetailPurchaseOrder!]!
+  detailPurchaseOrder(id: Int!): DetailPurchaseOrder!
+  detailSalesOrders: [DetailSalesOrder!]!
+  detailSalesOrder(id: Int!): DetailSalesOrder!
 }
 
 type Mutation {
@@ -76,6 +122,18 @@ type Mutation {
   removeUser(id: ID!): String!
   blockUser(id: ID!): User!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!): PurchaseOrder!
+  updatePurchaseOrder(updatePurchaseOrderInput: UpdatePurchaseOrderInput!): PurchaseOrder!
+  removePurchaseOrder(id: Int!): PurchaseOrder!
+  createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!): SalesOrder!
+  updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
+  removeSalesOrder(id: Int!): SalesOrder!
+  createDetailPurchaseOrder(createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!): DetailPurchaseOrder!
+  updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
+  removeDetailPurchaseOrder(id: Int!): DetailPurchaseOrder!
+  createDetailSalesOrder(createDetailSalesOrderInput: CreateDetailSalesOrderInput!): DetailSalesOrder!
+  updateDetailSalesOrder(updateDetailSalesOrderInput: UpdateDetailSalesOrderInput!): DetailSalesOrder!
+  removeDetailSalesOrder(id: Int!): DetailSalesOrder!
 }
 
 input CreateProductInput {
@@ -143,4 +201,64 @@ input UpdateUserInput {
 
 input CreateCategoryInput {
   name: String!
+}
+
+input CreatePurchaseOrderInput {
+  supplier: ID!
+  date: String!
+  fullPurchasePrice: Float!
+}
+
+input UpdatePurchaseOrderInput {
+  supplier: ID
+  date: String
+  fullPurchasePrice: Float
+  id: Int!
+}
+
+input CreateSalesOrderInput {
+  client: ID!
+  date: String!
+  fullSalePrice: Float!
+}
+
+input UpdateSalesOrderInput {
+  client: ID
+  date: String
+  fullSalePrice: Float
+  id: Int!
+}
+
+input CreateDetailPurchaseOrderInput {
+  product: ID!
+  purchaseOrder: ID!
+  inputQuantity: Int!
+  unitPrice: Float!
+  purchasePrice: Float!
+}
+
+input UpdateDetailPurchaseOrderInput {
+  product: ID
+  purchaseOrder: ID
+  inputQuantity: Int
+  unitPrice: Float
+  purchasePrice: Float
+  id: Int!
+}
+
+input CreateDetailSalesOrderInput {
+  product: ID!
+  salesOrder: ID!
+  outputQuantity: Int!
+  unitPrice: Float!
+  salePrice: Float!
+}
+
+input UpdateDetailSalesOrderInput {
+  product: ID
+  salesOrder: ID
+  outputQuantity: Int
+  unitPrice: Float
+  salePrice: Float
+  id: Int!
 }

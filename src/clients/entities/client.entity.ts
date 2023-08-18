@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { SalesOrder } from 'src/sales-orders/entities/sales-order.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({name: 'clients'})
 @ObjectType()
@@ -19,4 +20,8 @@ export class Client {
   @Column()
   @Field( () => String )
   phone: string;
+
+  @OneToMany( () => SalesOrder, (sales) => sales.client )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
+  @Field( () => [SalesOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
+  sales: SalesOrder[];
 }

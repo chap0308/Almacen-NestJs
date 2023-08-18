@@ -12,6 +12,10 @@ import { UsersModule } from './users/users.module';
 import { CategoryModule } from './category/category.module';
 import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
+import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
+import { SalesOrdersModule } from './sales-orders/sales-orders.module';
+import { DetailPurchaseOrdersModule } from './detail-purchase-orders/detail-purchase-orders.module';
+import { DetailSalesOrdersModule } from './detail-sales-orders/detail-sales-orders.module';
 
 @Module({
   imports: [
@@ -43,6 +47,10 @@ import { AuthModule } from './auth/auth.module';
     CategoryModule,
     CommonModule,
     AuthModule,
+    PurchaseOrdersModule,
+    SalesOrdersModule,
+    DetailPurchaseOrdersModule,
+    DetailSalesOrdersModule,
   ],
   controllers: [],
   providers: [],
