@@ -39,6 +39,12 @@ type User {
   fullname: String!
   rol: String!
   phone: String!
+  isActive: Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
 }
 
 type Query {
@@ -48,9 +54,10 @@ type Query {
   client(id: ID!): Client!
   suppliers(offset: Int = 0, limit: Int = 10, search: String): [Supplier!]!
   supplier(id: ID!): Supplier!
-  users: [User!]!
-  user(id: Int!): User!
+  users(offset: Int = 0, limit: Int = 10, search: String): [User!]!
+  user(id: ID!): User!
   categories: [Category!]!
+  revalite: AuthResponse!
 }
 
 type Mutation {
@@ -65,7 +72,7 @@ type Mutation {
   removeSupplier(id: ID!): String!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: Int!): User!
+  removeUser(id: ID!): String!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
 }
 
@@ -109,14 +116,27 @@ input UpdateSupplierInput {
 }
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  email: String!
+  password: String!
+  fullname: String!
+  rol: ValidRoles!
+  phone: String!
+}
+
+"""Únicos roles de los usuarios"""
+enum ValidRoles {
+  administrador
+  trabajador
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  email: String
+  password: String
+  fullname: String
+  rol: ValidRoles
+  phone: String
+  id: ID!
+  isActive: Boolean
 }
 
 input CreateCategoryInput {

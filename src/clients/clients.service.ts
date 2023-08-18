@@ -39,7 +39,7 @@ export class ClientsService {
   async findOne(id: string): Promise<Client> {
     const product = await this.clientsRepository.findOneBy({id});
 
-    if ( !product ) throw new NotFoundException(`Item with id: ${ id } not found`);
+    if ( !product ) throw new NotFoundException(`Client with id: ${ id } not found`);
 
     return product;
   }

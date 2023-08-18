@@ -11,6 +11,7 @@ import { SupplierModule } from './supplier/supplier.module';
 import { UsersModule } from './users/users.module';
 import { CategoryModule } from './category/category.module';
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CommonModule } from './common/common.module';
     UsersModule,
     CategoryModule,
     CommonModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

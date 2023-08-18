@@ -27,4 +27,11 @@ export class User {
   @Column()
   @Field( () => String )
   phone: string;
+
+  @Column({
+    type: 'boolean',
+    default: true
+  })
+  @Field( () => Boolean )
+  isActive: boolean;
 }

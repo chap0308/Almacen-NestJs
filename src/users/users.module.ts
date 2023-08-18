@@ -9,5 +9,9 @@ import { User } from './entities/user.entity';
   imports: [
     TypeOrmModule.forFeature([User])//*importante para la base de datos:
   ],
+  exports: [
+    UsersService,//* pero los controllers o services sí necesitan ser exportados
+    TypeOrmModule,//* en caso de que alguien quiere usar los entities de esta carpeta o inyectar el Respository de nuestras entidades.
+  ]
 })
 export class UsersModule {}
