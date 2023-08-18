@@ -29,6 +29,10 @@ export class AuthService {
         
         const user = await this.usersService.findOneByEmail( email );//! usamos un metodo de UsersService
 
+        if(user.isActive === false){
+            throw new UnauthorizedException(`User is inactive, talk with an admin`);
+        }
+
         // console.log(bcrypt.compareSync( password, user.password))
 
         if( !bcrypt.compareSync( password, user.password) ){

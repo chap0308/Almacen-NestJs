@@ -57,7 +57,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+  async update(id: string, updateUserInput: UpdateUserInput, updateBy: User): Promise<User> {
     await this.findOne( id );
     try {
       const user = await this.usersRepository.preload({
@@ -65,6 +65,8 @@ export class UsersService {
         password: updateUserInput.password ? bcrypt.hashSync( updateUserInput.password, 10 ) : updateUserInput.password,
         id
       });
+
+      user.lastUpdateBy = updateBy;
 
       return await this.usersRepository.save( user );
 
@@ -77,6 +79,19 @@ export class UsersService {
     const user = await this.findOne( id );
     await this.usersRepository.remove( user );
     return "Usuario eliminado correctamente";
+  }
+
+  async block( id: string, adminUser: User ): Promise<User> {
+    
+    const userToBlock = await this.findOneById( id );
+
+    userToBlock.isActive = false;
+    userToBlock.lastUpdateBy = adminUser;
+
+    return await this.usersRepository.save( userToBlock );
+
+    // return `Usuario ${userToBlock.fullname} bloqueado correctamente`;
+
   }
 
   //? este metodo es usado en authService

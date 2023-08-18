@@ -48,8 +48,9 @@ export class SupplierService {
     await this.findOne( id );
     const supplier = await this.suppliersRepository.preload( updateSupplierInput );
     if ( !supplier ) throw new NotFoundException(`Supplier with id: ${ id } not found`);
+    
+    return await this.suppliersRepository.save( supplier );
 
-    return this.suppliersRepository.save( supplier );
   }
 
   async remove(id: string): Promise<string> {
@@ -57,4 +58,5 @@ export class SupplierService {
     await this.suppliersRepository.remove( supplier );
     return "Proveedor eliminado correctamente";
   }
+
 }

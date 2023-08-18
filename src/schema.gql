@@ -19,6 +19,16 @@ type Product {
   saleUnitPrice: Float!
 }
 
+type User {
+  id: ID!
+  email: String!
+  fullname: String!
+  rol: String!
+  phone: String!
+  isActive: Boolean!
+  lastUpdateBy: User
+}
+
 type Client {
   id: ID!
   fullname: String!
@@ -31,15 +41,6 @@ type Supplier {
   fullname: String!
   email: String!
   phone: String!
-}
-
-type User {
-  id: ID!
-  email: String!
-  fullname: String!
-  rol: String!
-  phone: String!
-  isActive: Boolean!
 }
 
 type AuthResponse {
@@ -73,6 +74,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): String!
+  blockUser(id: ID!): User!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
 }
 
