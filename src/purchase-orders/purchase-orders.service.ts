@@ -7,6 +7,7 @@ import { PurchaseOrder } from './entities/purchase-order.entity';
 import { DetailPurchaseOrdersService } from '../detail-purchase-orders/detail-purchase-orders.service';
 import { CreateDetailPurchaseOrderInput } from '../detail-purchase-orders/dto/create-detail-purchase-order.input';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
+import { DateArgs, PaginationArgs } from '../common/dto/args';
 
 @Injectable()
 export class PurchaseOrdersService {
@@ -34,12 +35,20 @@ export class PurchaseOrdersService {
     return await this.detailPurchaseOrdersService.create(purchaseOrderId, createDetailPurchaseOrderInput, purchaseOrderProductInput);
   }
 
-  findAll() {
-    return `This action returns all purchaseOrders`;
+  async findAll(dateArgs: DateArgs, paginationArgs: PaginationArgs): Promise<PurchaseOrder[]> {
+    // console.log(dateArgs.date)
+    const { limit, offset } = paginationArgs;//*ya vienen con valores por defecto
+
+    const queryBuilder = this.purchaseOrdersRepository.createQueryBuilder()
+      .take( limit )
+      .skip( offset )
+      .where( '"date" = :date', { date: dateArgs.date } );
+
+    return await queryBuilder.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} purchaseOrder`;
+  async findOne(id: string): Promise<PurchaseOrder> {
+    throw Error('Method not implemented.');
   }
 
   update(id: number, updatePurchaseOrderInput: UpdatePurchaseOrderInput) {

@@ -1,18 +1,25 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, ID, Parent } from '@nestjs/graphql';
 import { PurchaseOrdersService } from './purchase-orders.service';
 import { PurchaseOrder } from './entities/purchase-order.entity';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { UpdatePurchaseOrderInput } from './dto/update-purchase-order.input';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { CreateDetailPurchaseOrderInput } from '../detail-purchase-orders/dto/create-detail-purchase-order.input';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
+import { DateArgs, PaginationArgs } from '../common/dto/args';
+import { ValidRoles } from '../users/enums/valid-roles.enum';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
+import { DetailPurchaseOrder } from '../detail-purchase-orders/entities/detail-purchase-order.entity';
+import { DetailPurchaseOrdersService } from '../detail-purchase-orders/detail-purchase-orders.service';
 
 @Resolver(() => PurchaseOrder)
 @UseGuards( JwtAuthGuard )
 export class PurchaseOrdersResolver {
   constructor(
-    private readonly purchaseOrdersService: PurchaseOrdersService
+    private readonly purchaseOrdersService: PurchaseOrdersService,
+    private readonly detailPurchaseOrdersService: DetailPurchaseOrdersService
     ) {}
 
   @Mutation(() => Boolean, { name: 'createPurchaseOrder' })
@@ -24,13 +31,20 @@ export class PurchaseOrdersResolver {
     return this.purchaseOrdersService.createPurchase(createPurchaseOrderInput, createDetailPurchaseOrderInput, purchaseOrderProductInput);
   }
 
-  @Query(() => [PurchaseOrder], { name: 'purchaseOrders' })
-  findAll() {
-    return this.purchaseOrdersService.findAll();
+  @Query(() => [PurchaseOrder], { name: 'purchaseOrdersByDate' })
+  findAll(
+    @Args() dateArgs: DateArgs,
+    @Args() paginationArgs: PaginationArgs,
+    @CurrentUser( ValidRoles.trabajador ) user: User
+  ): Promise<PurchaseOrder[]> {
+    return this.purchaseOrdersService.findAll(dateArgs, paginationArgs);
   }
 
   @Query(() => PurchaseOrder, { name: 'purchaseOrder' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser( ValidRoles.trabajador ) user: User
+    ): Promise<PurchaseOrder> {
     return this.purchaseOrdersService.findOne(id);
   }
 
@@ -44,5 +58,21 @@ export class PurchaseOrdersResolver {
     return this.purchaseOrdersService.remove(id);
   }
 
+  @ResolveField( () => [DetailPurchaseOrder], { name: 'detailPurchaseOrders' } )
+  async getDetailPurchaseOrder(
+    @Parent() purchaseOrder: PurchaseOrder,
+    @Args() paginationArgs: PaginationArgs,
+    // @Args() searchArgs: SearchArgs,
+  ): Promise<DetailPurchaseOrder[]> {
+
+    return this.detailPurchaseOrdersService.findAll( purchaseOrder, paginationArgs );
+  }
+
+  @ResolveField( () => Number, { name: 'totalProducts' } )
+  async countDetailPurchasesByPurchase(//*Esto es para contar cuantos listItems tiene cada lista
+    @Parent() purchaseOrder: PurchaseOrder,
+  ): Promise<number> {
+    return this.detailPurchaseOrdersService.countDetailPurchasesByPurchase( purchaseOrder );
+  }
   
 }

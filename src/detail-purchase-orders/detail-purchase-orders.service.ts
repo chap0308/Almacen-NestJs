@@ -7,6 +7,8 @@ import { DetailPurchaseOrder } from './entities/detail-purchase-order.entity';
 import { Product } from '../products/entities/product.entity';
 import { ProductsService } from '../products/products.service';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
+import { PaginationArgs } from '../common/dto/args';
+import { PurchaseOrder } from '../purchase-orders/entities/purchase-order.entity';
 
 @Injectable()
 export class DetailPurchaseOrdersService {
@@ -55,9 +57,26 @@ export class DetailPurchaseOrdersService {
     return true;
   }
 
-  findAll() {
-    return `This action returns all detailPurchaseOrders`;
+  async findAll(purchaseOrder:PurchaseOrder, paginationArgs:PaginationArgs):  Promise<DetailPurchaseOrder[]> {
+    // console.log(dateArgs.date)
+    const { limit, offset } = paginationArgs;//*ya vienen con valores por defecto
+    const queryBuilder = this.detailPurchaseOrdersRepository.createQueryBuilder()
+      .take( limit )
+      .skip( offset )
+      .where(`"purchaseOrderId" = :purchaseOrderId`, { purchaseOrderId: purchaseOrder.id });
+
+    return await queryBuilder.getMany();
   }
+
+  async countDetailPurchasesByPurchase( purchaseOrder: PurchaseOrder ): Promise<number> {
+    return this.detailPurchaseOrdersRepository.count({
+      where: { 
+        //! forma de como contar cuantos listItems tiene cada lista
+        purchaseOrder: { id: purchaseOrder.id }
+      }
+    });
+  }
+
 
   async findOne(id: string): Promise<DetailPurchaseOrder> {
     const detailPurchaseOrder = await this.detailPurchaseOrdersRepository.findOneBy({ id });

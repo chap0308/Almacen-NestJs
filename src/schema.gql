@@ -21,7 +21,8 @@ type PurchaseOrder {
   supplier: Supplier!
   date: String!
   fullPurchasePrice: Float!
-  detailPurchaseOrder: [DetailPurchaseOrder!]!
+  detailPurchaseOrders(offset: Int = 0, limit: Int = 10): [DetailPurchaseOrder!]!
+  totalProducts: Float!
 }
 
 type DetailPurchaseOrder {
@@ -97,9 +98,8 @@ type Query {
   user(id: ID!): User!
   categories: [Category!]!
   revalite: AuthResponse!
-  purchaseOrders: [PurchaseOrder!]!
-  purchaseOrder(id: Int!): PurchaseOrder!
-  detailPurchaseOrders: [DetailPurchaseOrder!]!
+  purchaseOrdersByDate(date: String = "24/08/2023", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
+  purchaseOrder(id: ID!): PurchaseOrder!
   detailPurchaseOrder(id: String!): DetailPurchaseOrder!
   salesOrders: [SalesOrder!]!
   salesOrder(id: Int!): SalesOrder!

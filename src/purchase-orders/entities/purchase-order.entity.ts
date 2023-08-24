@@ -24,7 +24,7 @@ export class PurchaseOrder {
   fullPurchasePrice: number
 
   @OneToMany( () => DetailPurchaseOrder, (detail) => detail.purchaseOrder )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
-  @Field( () => [DetailPurchaseOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
+  // @Field( () => [DetailPurchaseOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
   detailPurchaseOrder: DetailPurchaseOrder[];
 
 }
