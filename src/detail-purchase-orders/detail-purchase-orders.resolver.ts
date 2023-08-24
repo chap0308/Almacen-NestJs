@@ -3,14 +3,21 @@ import { DetailPurchaseOrdersService } from './detail-purchase-orders.service';
 import { DetailPurchaseOrder } from './entities/detail-purchase-order.entity';
 import { CreateDetailPurchaseOrderInput } from './dto/create-detail-purchase-order.input';
 import { UpdateDetailPurchaseOrderInput } from './dto/update-detail-purchase-order.input';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
 
 @Resolver(() => DetailPurchaseOrder)
+@UseGuards( JwtAuthGuard )
 export class DetailPurchaseOrdersResolver {
   constructor(private readonly detailPurchaseOrdersService: DetailPurchaseOrdersService) {}
 
   @Mutation(() => DetailPurchaseOrder)
-  createDetailPurchaseOrder(@Args('createDetailPurchaseOrderInput') createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput) {
-    return this.detailPurchaseOrdersService.create(createDetailPurchaseOrderInput);
+  async createDetailPurchaseOrder(
+    @Args('purchaseOrderId', { type: () => String }, ParseUUIDPipe) purchaseOrderId: string,
+    @Args('createDetailPurchaseOrderInput') createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput,
+    @Args('purchaseOrderProductInput') purchaseOrderProductInput: PurchaseOrderProductInput): Promise<boolean> {
+    return this.detailPurchaseOrdersService.create(purchaseOrderId, createDetailPurchaseOrderInput, purchaseOrderProductInput);
   }
 
   @Query(() => [DetailPurchaseOrder], { name: 'detailPurchaseOrders' })
@@ -19,7 +26,7 @@ export class DetailPurchaseOrdersResolver {
   }
 
   @Query(() => DetailPurchaseOrder, { name: 'detailPurchaseOrder' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  async findOne(@Args('id', { type: () => String }, ParseUUIDPipe) id: string):  Promise<DetailPurchaseOrder> {
     return this.detailPurchaseOrdersService.findOne(id);
   }
 

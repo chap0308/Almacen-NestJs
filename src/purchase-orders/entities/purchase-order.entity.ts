@@ -15,7 +15,7 @@ export class PurchaseOrder {
   @Field( () => Supplier )
   supplier: Supplier;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ nullable: true })
   @Field( () => String )
   date: string
 

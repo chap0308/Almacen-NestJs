@@ -99,10 +99,10 @@ type Query {
   revalite: AuthResponse!
   purchaseOrders: [PurchaseOrder!]!
   purchaseOrder(id: Int!): PurchaseOrder!
+  detailPurchaseOrders: [DetailPurchaseOrder!]!
+  detailPurchaseOrder(id: String!): DetailPurchaseOrder!
   salesOrders: [SalesOrder!]!
   salesOrder(id: Int!): SalesOrder!
-  detailPurchaseOrders: [DetailPurchaseOrder!]!
-  detailPurchaseOrder(id: Int!): DetailPurchaseOrder!
   detailSalesOrders: [DetailSalesOrder!]!
   detailSalesOrder(id: Int!): DetailSalesOrder!
 }
@@ -122,15 +122,15 @@ type Mutation {
   removeUser(id: ID!): String!
   blockUser(id: ID!): User!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!): PurchaseOrder!
+  createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): Boolean!
   updatePurchaseOrder(updatePurchaseOrderInput: UpdatePurchaseOrderInput!): PurchaseOrder!
   removePurchaseOrder(id: Int!): PurchaseOrder!
+  createDetailPurchaseOrder(purchaseOrderId: String!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): DetailPurchaseOrder!
+  updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
+  removeDetailPurchaseOrder(id: Int!): DetailPurchaseOrder!
   createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!): SalesOrder!
   updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
   removeSalesOrder(id: Int!): SalesOrder!
-  createDetailPurchaseOrder(createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!): DetailPurchaseOrder!
-  updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
-  removeDetailPurchaseOrder(id: Int!): DetailPurchaseOrder!
   createDetailSalesOrder(createDetailSalesOrderInput: CreateDetailSalesOrderInput!): DetailSalesOrder!
   updateDetailSalesOrder(updateDetailSalesOrderInput: UpdateDetailSalesOrderInput!): DetailSalesOrder!
   removeDetailSalesOrder(id: Int!): DetailSalesOrder!
@@ -204,15 +204,37 @@ input CreateCategoryInput {
 }
 
 input CreatePurchaseOrderInput {
-  supplier: ID!
+  supplierId: ID!
   date: String!
   fullPurchasePrice: Float!
 }
 
+input CreateDetailPurchaseOrderInput {
+  productIds: [ID!]!
+  inputQuantity: [Int!]!
+  unitPrice: [Float!]!
+  purchasePrice: [Float!]!
+}
+
+input PurchaseOrderProductInput {
+  stock: [Int!]!
+  priceCost: [Float!]!
+  gain: [Float!]!
+  saleUnitPrice: [Float!]!
+}
+
 input UpdatePurchaseOrderInput {
-  supplier: ID
+  supplierId: ID
   date: String
   fullPurchasePrice: Float
+  id: Int!
+}
+
+input UpdateDetailPurchaseOrderInput {
+  productIds: [ID!]
+  inputQuantity: [Int!]
+  unitPrice: [Float!]
+  purchasePrice: [Float!]
   id: Int!
 }
 
@@ -226,23 +248,6 @@ input UpdateSalesOrderInput {
   client: ID
   date: String
   fullSalePrice: Float
-  id: Int!
-}
-
-input CreateDetailPurchaseOrderInput {
-  product: ID!
-  purchaseOrder: ID!
-  inputQuantity: Int!
-  unitPrice: Float!
-  purchasePrice: Float!
-}
-
-input UpdateDetailPurchaseOrderInput {
-  product: ID
-  purchaseOrder: ID
-  inputQuantity: Int
-  unitPrice: Float
-  purchasePrice: Float
   id: Int!
 }
 

@@ -75,4 +75,18 @@ export class ProductsService {
     await this.productsRepository.remove( product );
     return "Producto eliminado correctamente";
   }
+
+  async updateStock(id: string, quantity: number): Promise<Product> {
+    await this.findOne( id );
+    const queryBuilder = this.productsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ stock: () => `stock + ${ quantity }` })
+      .where('id = :id', { id })
+
+    await queryBuilder.execute();
+
+    return this.findOne( id );
+  
+  }
 }
