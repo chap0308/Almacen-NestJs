@@ -1,7 +1,7 @@
-import { InputType, Int, Field, ID, Float } from '@nestjs/graphql';
-import { Supplier } from '../../supplier/entities/supplier.entity';
-import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString, IsUUID, Min } from 'class-validator';
+import { InputType, Field, ID, Float } from '@nestjs/graphql';
 import { Transform } from 'class-transformer';
+import { IsDateString, IsNotEmpty, IsNumber, IsUUID, Min } from 'class-validator';
+
 
 @InputType()
 export class CreatePurchaseOrderInput {
@@ -10,9 +10,9 @@ export class CreatePurchaseOrderInput {
   supplierId: string;
 
   @Field( () => String )
-  // @IsDate()
-  @IsString()
+  @IsDateString()
   @IsNotEmpty()
+  @Transform( ({value}) => value.trim() )
   date: string
 
   @Field( () => Float )

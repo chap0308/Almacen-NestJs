@@ -5,7 +5,7 @@ import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from 'class-validat
 @InputType()
 export class CreateClientInput {
 
-  @Field( () => String )
+  @Field( () => String, { nullable: false} )//! por default son false
   @IsNotEmpty()
   @IsString()
   @Transform( ({value}) => value.trim() )
@@ -22,5 +22,6 @@ export class CreateClientInput {
   @IsNotEmpty()
   @IsString()
   @Matches(/^9\d{8}$/)
+  @Transform( ({value}) => value.trim() )
   phone: string;
 }

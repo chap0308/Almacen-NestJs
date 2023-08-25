@@ -16,7 +16,7 @@ export class SalesOrder {
   @Field( () => Client )
   client: Client;
 
-  @Column({ type: 'date', nullable: true })
+  @Column( { type: 'date', nullable: true })//! formato que acepta: 2023-08-20
   @Field( () => String )
   date: string
 
@@ -24,7 +24,8 @@ export class SalesOrder {
   @Field( () => Float )
   fullSalePrice: number
 
-  @OneToMany( () => DetailSalesOrder, (detail) => detail.salesOrder )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
-  @Field( () => [DetailSalesOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
+  // @OneToMany( () => DetailSalesOrder, (detail) => detail.salesOrder, { lazy: true  } )//! mismo caso que en purchase-order.entity(paginacion)
+  @OneToMany( () => DetailSalesOrder, (detail) => detail.salesOrder, { lazy: true  } )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
+  // @Field( () => [DetailSalesOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
   detailSalesOrder: DetailSalesOrder[];
 }

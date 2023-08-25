@@ -3,23 +3,24 @@ import { DetailSalesOrdersService } from './detail-sales-orders.service';
 import { DetailSalesOrder } from './entities/detail-sales-order.entity';
 import { CreateDetailSalesOrderInput } from './dto/create-detail-sales-order.input';
 import { UpdateDetailSalesOrderInput } from './dto/update-detail-sales-order.input';
+import { ParseUUIDPipe } from '@nestjs/common';
 
 @Resolver(() => DetailSalesOrder)
 export class DetailSalesOrdersResolver {
   constructor(private readonly detailSalesOrdersService: DetailSalesOrdersService) {}
 
-  @Mutation(() => DetailSalesOrder)
-  createDetailSalesOrder(@Args('createDetailSalesOrderInput') createDetailSalesOrderInput: CreateDetailSalesOrderInput) {
-    return this.detailSalesOrdersService.create(createDetailSalesOrderInput);
-  }
+  // @Mutation(() => DetailSalesOrder)
+  // createDetailSalesOrder(@Args('createDetailSalesOrderInput') createDetailSalesOrderInput: CreateDetailSalesOrderInput) {
+  //   return this.detailSalesOrdersService.create(createDetailSalesOrderInput);
+  // }
 
-  @Query(() => [DetailSalesOrder], { name: 'detailSalesOrders' })
-  findAll() {
-    return this.detailSalesOrdersService.findAll();
-  }
+  // @Query(() => [DetailSalesOrder], { name: 'detailSalesOrders' })
+  // findAll() {
+  //   return this.detailSalesOrdersService.findAll();
+  // }
 
   @Query(() => DetailSalesOrder, { name: 'detailSalesOrder' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }, ParseUUIDPipe) id: string): Promise<DetailSalesOrder> {
     return this.detailSalesOrdersService.findOne(id);
   }
 

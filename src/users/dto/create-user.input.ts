@@ -39,5 +39,6 @@ export class CreateUserInput {
     @IsNotEmpty()
     @IsString()
     @Matches(/^9\d{8}$/)
+    @Transform( ({value}) => value.trim() )
     phone: string;
 }

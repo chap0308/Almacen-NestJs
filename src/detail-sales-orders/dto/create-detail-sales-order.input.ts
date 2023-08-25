@@ -1,33 +1,30 @@
 import { InputType, Int, Field, ID, Float } from '@nestjs/graphql';
-import { IsNotEmpty, IsNumber, IsUUID, Min } from 'class-validator';
-import { Product } from '../../products/entities/product.entity';
-import { SalesOrder } from '../../sales-orders/entities/sales-order.entity';
+import { IsArray, IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreateDetailSalesOrderInput {
-  @Field(() => ID)
-  @IsUUID()
-  product: Product;
 
-  @Field(() => ID)
-  @IsUUID()
-  salesOrder: SalesOrder;
-
-  @Field( () => Int )
-  @IsNumber()
-  @Min(0)
+  @Field(() => [ID])
+  @IsArray()
   @IsNotEmpty()
-  outputQuantity: number
+  productIds: string[];
 
-  @Field( () => Float )
-  @IsNumber()
-  @Min(0)
-  @IsNotEmpty()
-  unitPrice: number;
+  // @Field(() => ID)
+  // @IsUUID()
+  // salesOrder: SalesOrder;
 
-  @Field( () => Float )
-  @IsNumber()
-  @Min(0)
+  @Field( () => [Int] )
+  @IsArray()
   @IsNotEmpty()
-  salePrice: number;
+  outputQuantity: number[]
+
+  @Field( () => [Float] )
+  @IsArray()
+  @IsNotEmpty()
+  unitPrice: number[];
+
+  @Field( () => [Float] )
+  @IsArray()
+  @IsNotEmpty()
+  salePrice: number[];
 }

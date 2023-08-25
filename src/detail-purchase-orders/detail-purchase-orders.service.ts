@@ -47,7 +47,7 @@ export class DetailPurchaseOrdersService {
         gain: gain[i],
         saleUnitPrice: saleUnitPrice[i]
       });
-      console.log(product)
+      //! console.log(product)
       if ( !product ) throw new NotFoundException(`Product with id: ${ productIds[i] } not found`);
 
       await this.productsRepository.save( product );
@@ -71,7 +71,7 @@ export class DetailPurchaseOrdersService {
   async countDetailPurchasesByPurchase( purchaseOrder: PurchaseOrder ): Promise<number> {
     return this.detailPurchaseOrdersRepository.count({
       where: { 
-        //! forma de como contar cuantos listItems tiene cada lista
+        //! forma de como contar cuantos detailPurchaseOrder tiene cada lista
         purchaseOrder: { id: purchaseOrder.id }
       }
     });
@@ -81,7 +81,7 @@ export class DetailPurchaseOrdersService {
   async findOne(id: string): Promise<DetailPurchaseOrder> {
     const detailPurchaseOrder = await this.detailPurchaseOrdersRepository.findOneBy({ id });
 
-    if ( !detailPurchaseOrder ) throw new NotFoundException(`List item with id ${ id } not found`);
+    if ( !detailPurchaseOrder ) throw new NotFoundException(`Detail Purchase Order with id ${ id } not found`);
 
     return detailPurchaseOrder;
   }
