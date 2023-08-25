@@ -8,7 +8,14 @@
 @Field( () => String, { nullable: true} )
 @IsOptional()
 
-## Usar @Transform( ({value}) => value.trim() ) cuando @IsOptional(), ya que, si no se coloca nada, haría un trim de un null y saldría error
-- Conclusion: Si es @IsNotEmpty(), NO usar @Transform( ({value}) => value.trim() )
+## Uso del @Transform( ({value}) => value.trim() ) cuando IsOptional o IsNotEmpty
+- Usar @Transform( ({value}) => value.trim() ) cuando @IsNotEmpty(), ya que, nos aseguramos de que sí o sí se debe colocar algo y hará un trim a ese valor.
+- Pero si es @IsOptional(), NO usar @Transform( ({value}) => value.trim() ), porque si no se coloca nada, haría un trim de un null y saldría error
 
-## NO se le debe colocar @Transform( ({value}) => value.trim() ) a un NUMBER, ya que, nos generará un error. Además, no es necesario, porque a pesar de que lo coloquemos con espacios, se corregirá en la base de datos
+## Uso del @Transform( ({value}) => value.trim() ) en numbers
+NO se debe colocar en un NUMBER, ya que, nos generará un error. Además, no es necesario, porque a pesar de que lo coloquemos con espacios, se corregirá en la base de datos
+
+## NOTA IMPORTANTE:
+Cuando una dos modulos dependen cada uno del otro, entonces se le considera una Circular Dependency.
+Para resolverlo: https://docs.nestjs.com/fundamentals/circular-dependency
+- Ejemplo: detail-purchase-orders.module y purchase-oirders.module

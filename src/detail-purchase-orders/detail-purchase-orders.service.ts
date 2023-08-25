@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, forwardRef, Inject } from '@nestjs/common';
 import { CreateDetailPurchaseOrderInput } from './dto/create-detail-purchase-order.input';
 import { UpdateDetailPurchaseOrderInput } from './dto/update-detail-purchase-order.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { ProductsService } from '../products/products.service';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
 import { PaginationArgs } from '../common/dto/args';
 import { PurchaseOrder } from '../purchase-orders/entities/purchase-order.entity';
+import { PurchaseOrdersService } from '../purchase-orders/purchase-orders.service';
 
 @Injectable()
 export class DetailPurchaseOrdersService {
@@ -18,7 +19,9 @@ export class DetailPurchaseOrdersService {
     private readonly detailPurchaseOrdersRepository: Repository<DetailPurchaseOrder>,
     @InjectRepository( Product )
     private readonly productsRepository: Repository<Product>,
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
+    @Inject(forwardRef(() => PurchaseOrdersService))
+    private readonly purchaseOrdersService: PurchaseOrdersService,
 
   ) {}
   
@@ -90,7 +93,15 @@ export class DetailPurchaseOrdersService {
     return `This action updates a #${id} detailPurchaseOrder`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} detailPurchaseOrder`;
+  async remove(id: string): Promise<boolean> {
+
+    await this.purchaseOrdersService.findOne(id);
+
+    await this.detailPurchaseOrdersRepository.createQueryBuilder()
+    .delete()
+    .where(`"purchaseOrderId" = :purchaseOrderId`, { purchaseOrderId: id })
+    .execute();
+    
+    return true;
   }
 }

@@ -45,8 +45,10 @@ export class DetailPurchaseOrdersResolver {
     return this.detailPurchaseOrdersService.update(updateDetailPurchaseOrderInput.id, updateDetailPurchaseOrderInput);
   }
 
-  @Mutation(() => DetailPurchaseOrder)
-  removeDetailPurchaseOrder(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => Boolean)
+  async removeDetailPurchaseOrder(
+    @Args('id', { type: () => String }, ParseUUIDPipe) id: string
+    ): Promise<boolean>  {
     return this.detailPurchaseOrdersService.remove(id);
   }
 }

@@ -127,7 +127,7 @@ type Mutation {
   removePurchaseOrder(id: Int!): PurchaseOrder!
   createDetailPurchaseOrder(purchaseOrderId: String!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): DetailPurchaseOrder!
   updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
-  removeDetailPurchaseOrder(id: Int!): DetailPurchaseOrder!
+  removeDetailPurchaseOrder(id: String!): Boolean!
   createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!, createDetailSalesOrderInput: CreateDetailSalesOrderInput!, saleOrderProductInput: SaleOrderProductInput!): Boolean!
   updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
   removeSalesOrder(id: Int!): SalesOrder!

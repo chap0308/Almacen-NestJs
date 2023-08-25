@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { UpdatePurchaseOrderInput } from './dto/update-purchase-order.input';
 import { Repository } from 'typeorm';
@@ -15,6 +15,7 @@ export class PurchaseOrdersService {
   constructor(
     @InjectRepository( PurchaseOrder )
     private readonly purchaseOrdersRepository: Repository<PurchaseOrder>,
+    @Inject(forwardRef(() => DetailPurchaseOrdersService))
     private readonly detailPurchaseOrdersService: DetailPurchaseOrdersService,
   ) {}
 
@@ -48,7 +49,11 @@ export class PurchaseOrdersService {
   }
 
   async findOne(id: string): Promise<PurchaseOrder> {
-    throw Error('Method not implemented.');
+    const purchaseOrder = await this.purchaseOrdersRepository.findOneBy({id});
+
+    if ( !purchaseOrder ) throw new NotFoundException(`Purchase Order with id: ${ id } not found`);
+
+    return purchaseOrder;
   }
 
   update(id: number, updatePurchaseOrderInput: UpdatePurchaseOrderInput) {
