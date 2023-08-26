@@ -4,7 +4,7 @@ import { PurchaseOrder } from './entities/purchase-order.entity';
 import { CreatePurchaseOrderInput } from './dto/create-purchase-order.input';
 import { UpdatePurchaseOrderInput } from './dto/update-purchase-order.input';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Inject, ParseUUIDPipe, UseGuards, forwardRef } from '@nestjs/common';
 import { CreateDetailPurchaseOrderInput } from '../detail-purchase-orders/dto/create-detail-purchase-order.input';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
 import { DateArgs, PaginationArgs } from '../common/dto/args';
@@ -19,6 +19,7 @@ import { DetailPurchaseOrdersService } from '../detail-purchase-orders/detail-pu
 export class PurchaseOrdersResolver {
   constructor(
     private readonly purchaseOrdersService: PurchaseOrdersService,
+    @Inject(forwardRef(() => DetailPurchaseOrdersService))//! Circular Dependency(ver notas)(ver notas)
     private readonly detailPurchaseOrdersService: DetailPurchaseOrdersService
     ) {}
 
@@ -47,15 +48,18 @@ export class PurchaseOrdersResolver {
     ): Promise<PurchaseOrder> {
     return this.purchaseOrdersService.findOne(id);
   }
-
+  //TODO: Usar el service de DetailPurchaseOrder
   @Mutation(() => PurchaseOrder)
   updatePurchaseOrder(@Args('updatePurchaseOrderInput') updatePurchaseOrderInput: UpdatePurchaseOrderInput) {
     return this.purchaseOrdersService.update(updatePurchaseOrderInput.id, updatePurchaseOrderInput);
   }
 
-  @Mutation(() => PurchaseOrder)
-  removePurchaseOrder(@Args('id', { type: () => Int }) id: number) {
-    return this.purchaseOrdersService.remove(id);
+  @Mutation(() => Boolean, { name: 'removePurchaseOrder' })
+  async removePurchaseOrder(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser( ValidRoles.trabajador ) user: User
+    ): Promise<boolean> {
+    return this.detailPurchaseOrdersService.removePurchaseOrderAndItsDetail(id);
   }
 
   @ResolveField( () => [DetailPurchaseOrder], { name: 'detailPurchaseOrders' } )

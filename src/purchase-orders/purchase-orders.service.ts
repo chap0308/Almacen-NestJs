@@ -15,7 +15,7 @@ export class PurchaseOrdersService {
   constructor(
     @InjectRepository( PurchaseOrder )
     private readonly purchaseOrdersRepository: Repository<PurchaseOrder>,
-    @Inject(forwardRef(() => DetailPurchaseOrdersService))
+    @Inject(forwardRef(() => DetailPurchaseOrdersService))//! Circular Dependency(ver notas) 
     private readonly detailPurchaseOrdersService: DetailPurchaseOrdersService,
   ) {}
 
@@ -60,7 +60,7 @@ export class PurchaseOrdersService {
     return `This action updates a #${id} purchaseOrder`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} purchaseOrder`;
-  }
+  // async remove(purchaseOrder: PurchaseOrder): Promise<void> {
+  //   await this.purchaseOrdersRepository.remove( purchaseOrder );
+  // }
 }

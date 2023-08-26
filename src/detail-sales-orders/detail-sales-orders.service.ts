@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateDetailSalesOrderInput } from './dto/create-detail-sales-order.input';
 import { UpdateDetailSalesOrderInput } from './dto/update-detail-sales-order.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { ProductsService } from '../products/products.service';
 import { SaleOrderProductInput } from '../products/dto/sale-order-product.input';
 import { PaginationArgs } from '../common/dto/args';
 import { SalesOrder } from '../sales-orders/entities/sales-order.entity';
+import { SalesOrdersService } from '../sales-orders/sales-orders.service';
 
 @Injectable()
 export class DetailSalesOrdersService {
@@ -18,8 +19,12 @@ export class DetailSalesOrdersService {
     private readonly detailSaleOrdersRepository: Repository<DetailSalesOrder>,
     @InjectRepository( Product )
     private readonly productsRepository: Repository<Product>,
-    private readonly productsService: ProductsService
+    @InjectRepository( SalesOrder )
+    private readonly salesOrdersRepository: Repository<SalesOrder>,
 
+    private readonly productsService: ProductsService,
+    @Inject(forwardRef(() => SalesOrdersService))//! Circular Dependency(ver notas) 
+    private readonly salesOrdersService: SalesOrdersService,
   ) {}
 
   async create(saleOrderId: string, createDetailSalesOrderInput: CreateDetailSalesOrderInput, saleOrderProductInput: SaleOrderProductInput): Promise<boolean> {
@@ -85,7 +90,19 @@ export class DetailSalesOrdersService {
     return `This action updates a #${id} detailSalesOrder`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} detailSalesOrder`;
+  async removeSalesOrderAndItsDetail(id: string): Promise<boolean> {
+    const saleOrder = await this.salesOrdersService.findOne(id);
+    try {
+      await this.detailSaleOrdersRepository.createQueryBuilder()
+      .delete()
+      .where(`"salesOrderId" = :salesOrderId`, { salesOrderId: id })
+      .execute();
+      
+      await this.salesOrdersRepository.remove(saleOrder);
+      return true;
+
+    } catch (error) {
+      throw new NotFoundException(`Sale Order with id ${ id } not found`);
+    }
   }
 }

@@ -99,11 +99,11 @@ type Query {
   user(id: ID!): User!
   categories: [Category!]!
   revalite: AuthResponse!
-  purchaseOrdersByDate(date: String = "2023-08-25", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
+  purchaseOrdersByDate(date: String = "2023-08-26", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
   purchaseOrder(id: ID!): PurchaseOrder!
   detailPurchaseOrder(id: String!): DetailPurchaseOrder!
-  salesOrdersByDate(date: String = "2023-08-25", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
-  salesOrder(id: Int!): SalesOrder!
+  salesOrdersByDate(date: String = "2023-08-26", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
+  salesOrder(id: ID!): SalesOrder!
   detailSalesOrder(id: String!): DetailSalesOrder!
 }
 
@@ -124,15 +124,12 @@ type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): Boolean!
   updatePurchaseOrder(updatePurchaseOrderInput: UpdatePurchaseOrderInput!): PurchaseOrder!
-  removePurchaseOrder(id: Int!): PurchaseOrder!
-  createDetailPurchaseOrder(purchaseOrderId: String!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): DetailPurchaseOrder!
+  removePurchaseOrder(id: ID!): Boolean!
   updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
-  removeDetailPurchaseOrder(id: String!): Boolean!
   createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!, createDetailSalesOrderInput: CreateDetailSalesOrderInput!, saleOrderProductInput: SaleOrderProductInput!): Boolean!
   updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
-  removeSalesOrder(id: Int!): SalesOrder!
+  removeSalesOrder(id: ID!): Boolean!
   updateDetailSalesOrder(updateDetailSalesOrderInput: UpdateDetailSalesOrderInput!): DetailSalesOrder!
-  removeDetailSalesOrder(id: Int!): DetailSalesOrder!
 }
 
 input CreateProductInput {

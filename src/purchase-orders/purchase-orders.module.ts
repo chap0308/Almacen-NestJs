@@ -9,7 +9,7 @@ import { DetailPurchaseOrdersModule } from '../detail-purchase-orders/detail-pur
   providers: [PurchaseOrdersResolver, PurchaseOrdersService],
   imports: [
     TypeOrmModule.forFeature([PurchaseOrder]),//*importante para la base de datos:
-    forwardRef(() => DetailPurchaseOrdersModule),
+    forwardRef(() => DetailPurchaseOrdersModule),//! Circular Dependency(ver notas) 
     // DetailPurchaseOrdersModule
   ],
   exports: [

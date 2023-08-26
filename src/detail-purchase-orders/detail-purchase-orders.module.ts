@@ -11,7 +11,7 @@ import { PurchaseOrdersModule } from './../purchase-orders/purchase-orders.modul
   imports: [
     TypeOrmModule.forFeature([DetailPurchaseOrder]),//*importante para la base de datos:
     ProductsModule,
-    forwardRef(() => PurchaseOrdersModule),
+    forwardRef(() => PurchaseOrdersModule),//! Circular Dependency(ver notas) 
     // PurchaseOrdersModule,
   ],
   exports: [

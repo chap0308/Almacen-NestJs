@@ -19,8 +19,11 @@ export class DetailPurchaseOrdersService {
     private readonly detailPurchaseOrdersRepository: Repository<DetailPurchaseOrder>,
     @InjectRepository( Product )
     private readonly productsRepository: Repository<Product>,
+    @InjectRepository( PurchaseOrder )
+    private readonly purchaseOrdersRepository: Repository<PurchaseOrder>,
+
     private readonly productsService: ProductsService,
-    @Inject(forwardRef(() => PurchaseOrdersService))
+    @Inject(forwardRef(() => PurchaseOrdersService))//! Circular Dependency(ver notas) 
     private readonly purchaseOrdersService: PurchaseOrdersService,
 
   ) {}
@@ -93,15 +96,21 @@ export class DetailPurchaseOrdersService {
     return `This action updates a #${id} detailPurchaseOrder`;
   }
 
-  async remove(id: string): Promise<boolean> {
+  async removePurchaseOrderAndItsDetail(id: string): Promise<boolean> {
 
-    await this.purchaseOrdersService.findOne(id);
+    const purchaseOrder = await this.purchaseOrdersService.findOne(id);
+    try {
+      await this.detailPurchaseOrdersRepository.createQueryBuilder()
+      .delete()
+      .where(`"purchaseOrderId" = :purchaseOrderId`, { purchaseOrderId: id })
+      .execute();
+      
+      await this.purchaseOrdersRepository.remove(purchaseOrder);
+      return true;
 
-    await this.detailPurchaseOrdersRepository.createQueryBuilder()
-    .delete()
-    .where(`"purchaseOrderId" = :purchaseOrderId`, { purchaseOrderId: id })
-    .execute();
+    } catch (error) {
+      throw new NotFoundException(`Purchase Order with id ${ id } not found`);
+    }
     
-    return true;
   }
 }

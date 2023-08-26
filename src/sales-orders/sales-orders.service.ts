@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, NotFoundException } from '@nestjs/common';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { UpdateSalesOrderInput } from './dto/update-sales-order.input';
 import { SaleOrderProductInput } from '../products/dto/sale-order-product.input';
@@ -14,7 +14,8 @@ export class SalesOrdersService {
 
   constructor(
     @InjectRepository( SalesOrder )
-    private readonly purchaseOrdersRepository: Repository<SalesOrder>,
+    private readonly salesOrdersRepository: Repository<SalesOrder>,
+    @Inject(forwardRef(() => DetailSalesOrdersService))//! Circular Dependency(ver notas) 
     private readonly detailSalesOrdersService: DetailSalesOrdersService,
   ) {}
 
@@ -22,15 +23,15 @@ export class SalesOrdersService {
     // console.log(createPurchaseOrderInput)
     const { clientId, ...rest } = createSalesOrderInput;
 
-    const newSaleOrder = this.purchaseOrdersRepository.create({
+    const newSaleOrder = this.salesOrdersRepository.create({
       ...rest,
       client: {id: clientId}
     });
-    await this.purchaseOrdersRepository.save( newSaleOrder )
+    await this.salesOrdersRepository.save( newSaleOrder )
     return newSaleOrder.id;
   }
 
-  async createSale(createSalesOrderInput: CreateSalesOrderInput, createDetailSalesOrderInput: CreateDetailSalesOrderInput, saleOrderProductInput: SaleOrderProductInput
+  async createSaleAndItsDetail(createSalesOrderInput: CreateSalesOrderInput, createDetailSalesOrderInput: CreateDetailSalesOrderInput, saleOrderProductInput: SaleOrderProductInput
   ): Promise<boolean> {
     const saleOrderId = await this.create(createSalesOrderInput);
     return await this.detailSalesOrdersService.create(saleOrderId, createDetailSalesOrderInput, saleOrderProductInput);
@@ -40,7 +41,7 @@ export class SalesOrdersService {
     // console.log(dateArgs.date)
     const { limit, offset } = paginationArgs;//*ya vienen con valores por defecto
 
-    const queryBuilder = this.purchaseOrdersRepository.createQueryBuilder()
+    const queryBuilder = this.salesOrdersRepository.createQueryBuilder()
       .take( limit )
       .skip( offset )
       .where( '"date" = :date', { date: dateArgs.date } );
@@ -48,8 +49,12 @@ export class SalesOrdersService {
     return await queryBuilder.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} salesOrder`;
+  async findOne(id: string): Promise<SalesOrder> {
+    const saleOrder = await this.salesOrdersRepository.findOneBy({id});
+
+    if ( !saleOrder ) throw new NotFoundException(`Sale Order with id: ${ id } not found`);
+
+    return saleOrder;
   }
 
   update(id: number, updateSalesOrderInput: UpdateSalesOrderInput) {

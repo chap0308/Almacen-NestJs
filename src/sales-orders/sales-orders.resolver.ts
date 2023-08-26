@@ -1,10 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, ID } from '@nestjs/graphql';
 import { SalesOrdersService } from './sales-orders.service';
 import { SalesOrder } from './entities/sales-order.entity';
 import { CreateSalesOrderInput } from './dto/create-sales-order.input';
 import { UpdateSalesOrderInput } from './dto/update-sales-order.input';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards, forwardRef, Inject } from '@nestjs/common';
 import { CreateDetailSalesOrderInput } from '../detail-sales-orders/dto/create-detail-sales-order.input';
 import { SaleOrderProductInput } from '../products/dto/sale-order-product.input';
 import { DateArgs, PaginationArgs } from '../common/dto/args';
@@ -19,6 +19,7 @@ import { DetailSalesOrdersService } from '../detail-sales-orders/detail-sales-or
 export class SalesOrdersResolver {
   constructor(
     private readonly salesOrdersService: SalesOrdersService,
+    @Inject(forwardRef(() => DetailSalesOrdersService))//! Circular Dependency(ver notas)
     private readonly detailSalesOrdersService: DetailSalesOrdersService
     ) {}
 
@@ -28,7 +29,7 @@ export class SalesOrdersResolver {
     @Args('createDetailSalesOrderInput') createDetailSalesOrderInput: CreateDetailSalesOrderInput,
     @Args('saleOrderProductInput') saleOrderProductInput: SaleOrderProductInput
     ): Promise<boolean> {
-    return this.salesOrdersService.createSale(createSalesOrderInput, createDetailSalesOrderInput, saleOrderProductInput);
+    return this.salesOrdersService.createSaleAndItsDetail(createSalesOrderInput, createDetailSalesOrderInput, saleOrderProductInput);
   }
 
   @Query(() => [SalesOrder], { name: 'salesOrdersByDate' })
@@ -41,18 +42,25 @@ export class SalesOrdersResolver {
   }
 
   @Query(() => SalesOrder, { name: 'salesOrder' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser( ValidRoles.trabajador ) user: User
+  ): Promise<SalesOrder> {
     return this.salesOrdersService.findOne(id);
   }
 
+  //TODO: Usar el service de DetailSalesOrder
   @Mutation(() => SalesOrder)
   updateSalesOrder(@Args('updateSalesOrderInput') updateSalesOrderInput: UpdateSalesOrderInput) {
     return this.salesOrdersService.update(updateSalesOrderInput.id, updateSalesOrderInput);
   }
 
-  @Mutation(() => SalesOrder)
-  removeSalesOrder(@Args('id', { type: () => Int }) id: number) {
-    return this.salesOrdersService.remove(id);
+  @Mutation(() => Boolean, { name: 'removeSalesOrder' })
+  removeSalesOrder(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser( ValidRoles.trabajador ) user: User
+    ): Promise<boolean> {
+    return this.detailSalesOrdersService.removeSalesOrderAndItsDetail(id);
   }
 
   @ResolveField( () => [DetailSalesOrder], { name: 'detailPurchaseOrders' } )
