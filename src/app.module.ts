@@ -17,6 +17,7 @@ import { SalesOrdersModule } from './sales-orders/sales-orders.module';
 import { DetailPurchaseOrdersModule } from './detail-purchase-orders/detail-purchase-orders.module';
 import { DetailSalesOrdersModule } from './detail-sales-orders/detail-sales-orders.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { InventoryModule } from './inventory/inventory.module';
     DetailPurchaseOrdersModule,
     DetailSalesOrdersModule,
     InventoryModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],

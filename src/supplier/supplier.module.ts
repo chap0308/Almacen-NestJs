@@ -9,5 +9,8 @@ import { Supplier } from './entities/supplier.entity';
   imports: [
     TypeOrmModule.forFeature([Supplier])//*importante para la base de datos:
   ],
+  exports: [
+    TypeOrmModule
+  ]
 })
 export class SupplierModule {}

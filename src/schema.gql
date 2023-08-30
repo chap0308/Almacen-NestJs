@@ -142,6 +142,9 @@ type Mutation {
   removeUser(id: ID!): String!
   blockUser(id: ID!): User!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
+
+  """Ejecuta la construcción de la base de datos"""
+  executeSeed: Boolean!
 }
 
 input CreateProductInput {

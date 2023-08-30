@@ -9,5 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forFeature([Client])//*importante para la base de datos:
   ],
+  exports: [
+    TypeOrmModule
+  ]
 })
 export class ClientsModule {}

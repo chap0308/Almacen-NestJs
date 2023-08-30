@@ -43,7 +43,7 @@ export class ProductsService {
       queryBuilder.andWhere('LOWER("description") like :description', { description: `%${ search.toLowerCase() }%` });
     }
 
-    return queryBuilder.getMany();
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: string): Promise<Product>  {

@@ -32,8 +32,8 @@ export class ClientsService {
     if ( search ) {//*si no viene undefined
       queryBuilder.andWhere('LOWER("fullname") like :fullname', { fullname: `%${ search.toLowerCase() }%` });
     }
-
-    return queryBuilder.getMany();
+    
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: string): Promise<Client> {
