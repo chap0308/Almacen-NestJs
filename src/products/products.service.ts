@@ -94,7 +94,7 @@ export class ProductsService {
   }
 
   async getDetailInventoryByDate(date:DateArgs): Promise<Inventory[]>{
-
+    const testDate = '2023-07-25'//! recomendado
     const inventaryByDate = await this.productsRepository
     .createQueryBuilder("p")
     .select([
@@ -144,7 +144,7 @@ export class ProductsService {
   }
 
   async getDetailStockByDate(date:DateArgs): Promise<Inventory[]>{
-
+    const testDate = '2023-07-25'//! recomendado
     const stockByDate = await this.productsRepository
     .createQueryBuilder("p")
     .select([
