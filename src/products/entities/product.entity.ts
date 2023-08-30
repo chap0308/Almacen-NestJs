@@ -8,11 +8,11 @@ import { DetailSalesOrder } from '../../detail-sales-orders/entities/detail-sale
 @ObjectType()
 export class Product {
 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   @Field( () => ID ) 
   id: string;
 
-  @Column()
+  @Column({ length: 50 })
   @Field( () => String )
   description: string;
 
@@ -21,31 +21,31 @@ export class Product {
   @Field( () => Category )
   category: Category;
 
-  @Column()
+  @Column({default: 0})
   @Field( () => Int )
-  stock: number=0;
+  stock: number;
 
-  @Column()
+  @Column({ length: 200 })
   @Field( () => String )
   image: string;
 
-  @Column({type: 'float'})
+  @Column({type: 'decimal', default: 0, precision: 10, scale: 2})
   @Field( () => Float )
-  priceCost: number=0;
+  priceCost: number;
 
-  @Column({type: 'float'})
+  @Column({type: 'decimal', default: 0, precision: 10, scale: 2})
   @Field( () => Float )
-  gain: number=0;
+  gain: number;
 
-  @Column({type: 'float'})
+  @Column({type: 'decimal', default: 0, precision: 10, scale: 2})
   @Field( () => Float )
-  saleUnitPrice: number=0;
+  saleUnitPrice: number;
 
-  @OneToMany( () => DetailPurchaseOrder, (detail) => detail.product )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
+  @OneToMany( () => DetailPurchaseOrder, (detail) => detail.product, { lazy: true } )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
   @Field( () => [DetailPurchaseOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
   detailPurchaseOrder: DetailPurchaseOrder[];
 
-  @OneToMany( () => DetailSalesOrder, (detail) => detail.product )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
+  @OneToMany( () => DetailSalesOrder, (detail) => detail.product, { lazy: true } )//! por la relacion  @OneToMany, no veremos esta variable en nuestra tabla
   @Field( () => [DetailSalesOrder] )//* comentamos esto porque usaremos un @ResolverField para mostrar las listas con su paginacion
   detailSalesOrder: DetailSalesOrder[];
 }

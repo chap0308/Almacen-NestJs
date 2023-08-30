@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { DetailSalesOrder } from './entities/detail-sales-order.entity';
 import { ProductsService } from '../products/products.service';
 import { SaleOrderProductInput } from '../products/dto/sale-order-product.input';
-import { PaginationArgs } from '../common/dto/args';
+import { DateArgs, PaginationArgs } from '../common/dto/args';
 import { SalesOrder } from '../sales-orders/entities/sales-order.entity';
 import { SalesOrdersService } from '../sales-orders/sales-orders.service';
 
@@ -22,6 +22,7 @@ export class DetailSalesOrdersService {
     @InjectRepository( SalesOrder )
     private readonly salesOrdersRepository: Repository<SalesOrder>,
 
+    @Inject(forwardRef(() => ProductsService))//! Circular Dependency(ver notas) 
     private readonly productsService: ProductsService,
     @Inject(forwardRef(() => SalesOrdersService))//! Circular Dependency(ver notas) 
     private readonly salesOrdersService: SalesOrdersService,
@@ -105,4 +106,5 @@ export class DetailSalesOrdersService {
       throw new NotFoundException(`Sale Order with id ${ id } not found`);
     }
   }
+
 }

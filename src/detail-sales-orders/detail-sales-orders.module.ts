@@ -10,11 +10,13 @@ import { SalesOrdersModule } from '../sales-orders/sales-orders.module';
   providers: [DetailSalesOrdersResolver, DetailSalesOrdersService],
   imports: [
     TypeOrmModule.forFeature([DetailSalesOrder]),//*importante para la base de datos:
-    ProductsModule,
+    // ProductsModule,
+    forwardRef(() => ProductsModule),
     forwardRef(() => SalesOrdersModule),//! Circular Dependency(ver notas)(ver notas)
   ],
   exports: [
-    DetailSalesOrdersService
+    DetailSalesOrdersService,
+    TypeOrmModule
   ]
 })
 export class DetailSalesOrdersModule {}

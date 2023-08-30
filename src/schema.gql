@@ -88,9 +88,26 @@ type AuthResponse {
   user: User!
 }
 
+type Inventory {
+  idproduct: Int!
+  description: String!
+  category: String!
+  fullinput: Int!
+  fulloutput: Int!
+  stock: Int!
+  expenses: Float!
+  income: Float!
+}
+
 type Query {
   products(offset: Int = 0, limit: Int = 10, search: String): [Product!]!
   product(id: ID!): Product!
+  detailSalesOrder(id: String!): DetailSalesOrder!
+  detailPurchaseOrder(id: String!): DetailPurchaseOrder!
+  purchaseOrdersByDate(date: String = "2023-08-30", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
+  purchaseOrder(id: ID!): PurchaseOrder!
+  salesOrdersByDate(date: String = "2023-08-30", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
+  salesOrder(id: ID!): SalesOrder!
   clients(offset: Int = 0, limit: Int = 10, search: String): [Client!]!
   client(id: ID!): Client!
   suppliers(offset: Int = 0, limit: Int = 10, search: String): [Supplier!]!
@@ -99,18 +116,21 @@ type Query {
   user(id: ID!): User!
   categories: [Category!]!
   revalite: AuthResponse!
-  purchaseOrdersByDate(date: String = "2023-08-26", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
-  purchaseOrder(id: ID!): PurchaseOrder!
-  detailPurchaseOrder(id: String!): DetailPurchaseOrder!
-  salesOrdersByDate(date: String = "2023-08-26", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
-  salesOrder(id: ID!): SalesOrder!
-  detailSalesOrder(id: String!): DetailSalesOrder!
+  inventory(date: String = "2023-08-30"): [Inventory!]!
 }
 
 type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   removeProduct(id: ID!): String!
+  updateDetailSalesOrder(updateDetailSalesOrderInput: UpdateDetailSalesOrderInput!): DetailSalesOrder!
+  updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
+  createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): Boolean!
+  updatePurchaseOrder(updatePurchaseOrderInput: UpdatePurchaseOrderInput!): PurchaseOrder!
+  removePurchaseOrder(id: ID!): Boolean!
+  createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!, createDetailSalesOrderInput: CreateDetailSalesOrderInput!, saleOrderProductInput: SaleOrderProductInput!): Boolean!
+  updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
+  removeSalesOrder(id: ID!): Boolean!
   createClient(createClientInput: CreateClientInput!): Client!
   updateClient(updateClientInput: UpdateClientInput!): Client!
   removeClient(id: ID!): String!
@@ -122,14 +142,6 @@ type Mutation {
   removeUser(id: ID!): String!
   blockUser(id: ID!): User!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
-  createPurchaseOrder(createPurchaseOrderInput: CreatePurchaseOrderInput!, createDetailPurchaseOrderInput: CreateDetailPurchaseOrderInput!, purchaseOrderProductInput: PurchaseOrderProductInput!): Boolean!
-  updatePurchaseOrder(updatePurchaseOrderInput: UpdatePurchaseOrderInput!): PurchaseOrder!
-  removePurchaseOrder(id: ID!): Boolean!
-  updateDetailPurchaseOrder(updateDetailPurchaseOrderInput: UpdateDetailPurchaseOrderInput!): DetailPurchaseOrder!
-  createSalesOrder(createSalesOrderInput: CreateSalesOrderInput!, createDetailSalesOrderInput: CreateDetailSalesOrderInput!, saleOrderProductInput: SaleOrderProductInput!): Boolean!
-  updateSalesOrder(updateSalesOrderInput: UpdateSalesOrderInput!): SalesOrder!
-  removeSalesOrder(id: ID!): Boolean!
-  updateDetailSalesOrder(updateDetailSalesOrderInput: UpdateDetailSalesOrderInput!): DetailSalesOrder!
 }
 
 input CreateProductInput {
@@ -143,6 +155,73 @@ input UpdateProductInput {
   image: String
   categoryId: ID
   id: ID!
+}
+
+input UpdateDetailSalesOrderInput {
+  productIds: [ID!]
+  outputQuantity: [Int!]
+  unitPrice: [Float!]
+  salePrice: [Float!]
+  id: Int!
+}
+
+input UpdateDetailPurchaseOrderInput {
+  productIds: [ID!]
+  inputQuantity: [Int!]
+  unitPrice: [Float!]
+  purchasePrice: [Float!]
+  id: Int!
+}
+
+input CreatePurchaseOrderInput {
+  supplierId: ID!
+  date: String!
+  fullPurchasePrice: Float!
+}
+
+input CreateDetailPurchaseOrderInput {
+  productIds: [ID!]!
+  inputQuantity: [Int!]!
+  unitPrice: [Float!]!
+  purchasePrice: [Float!]!
+}
+
+input PurchaseOrderProductInput {
+  stock: [Int!]!
+  priceCost: [Float!]!
+  gain: [Float!]!
+  saleUnitPrice: [Float!]!
+}
+
+input UpdatePurchaseOrderInput {
+  supplierId: ID
+  date: String
+  fullPurchasePrice: Float
+  id: Int!
+}
+
+input CreateSalesOrderInput {
+  clientId: ID!
+  date: String!
+  fullSalePrice: Float!
+}
+
+input CreateDetailSalesOrderInput {
+  productIds: [ID!]!
+  outputQuantity: [Int!]!
+  unitPrice: [Float!]!
+  salePrice: [Float!]!
+}
+
+input SaleOrderProductInput {
+  stock: [Int!]!
+}
+
+input UpdateSalesOrderInput {
+  clientId: ID
+  date: String
+  fullSalePrice: Float
+  id: Int!
 }
 
 input CreateClientInput {
@@ -197,71 +276,4 @@ input UpdateUserInput {
 
 input CreateCategoryInput {
   name: String!
-}
-
-input CreatePurchaseOrderInput {
-  supplierId: ID!
-  date: String!
-  fullPurchasePrice: Float!
-}
-
-input CreateDetailPurchaseOrderInput {
-  productIds: [ID!]!
-  inputQuantity: [Int!]!
-  unitPrice: [Float!]!
-  purchasePrice: [Float!]!
-}
-
-input PurchaseOrderProductInput {
-  stock: [Int!]!
-  priceCost: [Float!]!
-  gain: [Float!]!
-  saleUnitPrice: [Float!]!
-}
-
-input UpdatePurchaseOrderInput {
-  supplierId: ID
-  date: String
-  fullPurchasePrice: Float
-  id: Int!
-}
-
-input UpdateDetailPurchaseOrderInput {
-  productIds: [ID!]
-  inputQuantity: [Int!]
-  unitPrice: [Float!]
-  purchasePrice: [Float!]
-  id: Int!
-}
-
-input CreateSalesOrderInput {
-  clientId: ID!
-  date: String!
-  fullSalePrice: Float!
-}
-
-input CreateDetailSalesOrderInput {
-  productIds: [ID!]!
-  outputQuantity: [Int!]!
-  unitPrice: [Float!]!
-  salePrice: [Float!]!
-}
-
-input SaleOrderProductInput {
-  stock: [Int!]!
-}
-
-input UpdateSalesOrderInput {
-  clientId: ID
-  date: String
-  fullSalePrice: Float
-  id: Int!
-}
-
-input UpdateDetailSalesOrderInput {
-  productIds: [ID!]
-  outputQuantity: [Int!]
-  unitPrice: [Float!]
-  salePrice: [Float!]
-  id: Int!
 }

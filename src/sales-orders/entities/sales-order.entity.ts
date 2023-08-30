@@ -7,7 +7,7 @@ import { DetailSalesOrder } from '../../detail-sales-orders/entities/detail-sale
 @ObjectType()
 export class SalesOrder {
 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   @Field( () => ID )
   id: string;
 
@@ -20,7 +20,7 @@ export class SalesOrder {
   @Field( () => String )
   date: string
 
-  @Column({ type: 'float' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   @Field( () => Float )
   fullSalePrice: number
 

@@ -6,7 +6,7 @@ import { SalesOrder } from '../../sales-orders/entities/sales-order.entity';
 @Entity({name: 'detail-sales-order'})
 @ObjectType()
 export class DetailSalesOrder {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   @Field( () => ID )
   id: string;
 
@@ -15,7 +15,7 @@ export class DetailSalesOrder {
   @Field( () => Product )
   product: Product;
 
-  @ManyToOne( () => SalesOrder, (product) => product.detailSalesOrder, { nullable: false, lazy: true  })//! por la relacion  @ManyToOne, esta variable aparecerá en nuestra tabla
+  @ManyToOne( () => SalesOrder, (salesOrder) => salesOrder.detailSalesOrder, { nullable: false, lazy: true  })//! por la relacion  @ManyToOne, esta variable aparecerá en nuestra tabla
   @Index('salesOrderId-detailSalesOrder-index')
   @Field( () => SalesOrder )
   salesOrder: SalesOrder;
@@ -24,11 +24,11 @@ export class DetailSalesOrder {
   @Field( () => Int )
   outputQuantity: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   @Field( () => Float )
   unitPrice: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   @Field( () => Float )
   salePrice: number;
 }

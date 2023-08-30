@@ -16,6 +16,7 @@ import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 import { SalesOrdersModule } from './sales-orders/sales-orders.module';
 import { DetailPurchaseOrdersModule } from './detail-purchase-orders/detail-purchase-orders.module';
 import { DetailSalesOrdersModule } from './detail-sales-orders/detail-sales-orders.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { DetailSalesOrdersModule } from './detail-sales-orders/detail-sales-orde
     SalesOrdersModule,
     DetailPurchaseOrdersModule,
     DetailSalesOrdersModule,
+    InventoryModule,
   ],
   controllers: [],
   providers: [],

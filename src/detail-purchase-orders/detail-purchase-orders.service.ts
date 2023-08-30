@@ -7,9 +7,10 @@ import { DetailPurchaseOrder } from './entities/detail-purchase-order.entity';
 import { Product } from '../products/entities/product.entity';
 import { ProductsService } from '../products/products.service';
 import { PurchaseOrderProductInput } from '../products/dto/purchase-order-product.input';
-import { PaginationArgs } from '../common/dto/args';
+import { DateArgs, PaginationArgs } from '../common/dto/args';
 import { PurchaseOrder } from '../purchase-orders/entities/purchase-order.entity';
 import { PurchaseOrdersService } from '../purchase-orders/purchase-orders.service';
+import { DetailPurchaseByDate } from './interface/detail-purchase-by.date,interface';
 
 @Injectable()
 export class DetailPurchaseOrdersService {
@@ -22,6 +23,7 @@ export class DetailPurchaseOrdersService {
     @InjectRepository( PurchaseOrder )
     private readonly purchaseOrdersRepository: Repository<PurchaseOrder>,
 
+    @Inject(forwardRef(() => ProductsService))//! Circular Dependency(ver notas) 
     private readonly productsService: ProductsService,
     @Inject(forwardRef(() => PurchaseOrdersService))//! Circular Dependency(ver notas) 
     private readonly purchaseOrdersService: PurchaseOrdersService,
@@ -113,4 +115,5 @@ export class DetailPurchaseOrdersService {
     }
     
   }
+
 }
