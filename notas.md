@@ -1,3 +1,8 @@
+## IMPORTANTE: HABILITAR CORS EN main.ts PARA USAR APOLLO.
+```typescript
+const app = await NestFactory.create(AppModule);
+app.enableCors(); //! importante colocar
+```
 ## NOTA IMPORTANTE:
 Cambiar a UUID los id
 
