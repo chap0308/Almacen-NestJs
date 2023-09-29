@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -22,18 +22,23 @@ import { SeedModule } from './seed/seed.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({//*localhost:3000/graphql
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      //*localhost:3000/graphql
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),//*direccion de donde quieres generar la carpeta
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //*direccion de donde quieres generar la carpeta
       //! IMPORTANTE PARA USAR APOLLO:
       playground: false,
       plugins: [
-        ApolloServerPluginLandingPageLocalDefault()//*con esto tenemos configurado Apollo
+        ApolloServerPluginLandingPageLocalDefault(), //*con esto tenemos configurado Apollo
       ],
       //!
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',//*puede ser mysql, postgres, etc
+      type: 'postgres', //*puede ser mysql, postgres, etc
+      ssl:
+        process.env.STATE === 'prod'
+          ? { rejectUnauthorized: false, sslmode: 'require' }
+          : (false as any),
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,

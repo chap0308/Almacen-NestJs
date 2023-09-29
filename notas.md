@@ -1,3 +1,6 @@
+## NOTA IMPORTANTE:
+Cambiar a UUID los id
+
 ## Por default son false, por eso, no es necesario colocarle. Solo para el true
 @Field( () => String, { nullable: false} )
 
