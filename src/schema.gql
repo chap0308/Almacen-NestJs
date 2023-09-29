@@ -21,6 +21,7 @@ type PurchaseOrder {
   supplier: Supplier!
   date: String!
   fullPurchasePrice: Float!
+  detailPurchaseOrder: [DetailPurchaseOrder!]!
   detailPurchaseOrders(offset: Int = 0, limit: Int = 10): [DetailPurchaseOrder!]!
   totalProducts: Float!
 }
@@ -47,6 +48,7 @@ type SalesOrder {
   client: Client!
   date: String!
   fullSalePrice: Float!
+  detailSalesOrder: [DetailSalesOrder!]!
   detailPurchaseOrders(offset: Int = 0, limit: Int = 10): [DetailSalesOrder!]!
   totalProducts: Float!
 }
@@ -81,6 +83,7 @@ type User {
   phone: String!
   isActive: Boolean!
   lastUpdateBy: User
+  password: String!
 }
 
 type AuthResponse {
