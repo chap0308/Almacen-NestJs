@@ -4,7 +4,7 @@ import { User } from '../../users/entities/user.entity';
 import { ValidRoles } from '../../users/enums/valid-roles.enum';
 
 export const CurrentUser = createParamDecorator( 
-    ( rol: ValidRoles, context: ExecutionContext ) => {
+    ( rol: ValidRoles, context: ExecutionContext ) => {//! es importante colocarle un primer parametro sí o sí, si no necesitas coloca _
         //*tiene sus diferencias en esta parte
         const ctx = GqlExecutionContext.create( context )
         const user: User = ctx.getContext().req.user;//! lee el request(de jwt.strategy.ts) y lo establece para que facilmente obtengamos el usuario

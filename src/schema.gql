@@ -107,9 +107,9 @@ type Query {
   product(id: ID!): Product!
   detailSalesOrder(id: String!): DetailSalesOrder!
   detailPurchaseOrder(id: String!): DetailPurchaseOrder!
-  purchaseOrdersByDate(date: String = "2023-09-29", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
+  purchaseOrdersByDate(date: String = "2023-10-07", offset: Int = 0, limit: Int = 10): [PurchaseOrder!]!
   purchaseOrder(id: ID!): PurchaseOrder!
-  salesOrdersByDate(date: String = "2023-09-29", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
+  salesOrdersByDate(date: String = "2023-10-07", offset: Int = 0, limit: Int = 10): [SalesOrder!]!
   salesOrder(id: ID!): SalesOrder!
   clients(offset: Int = 0, limit: Int = 10, search: String): [Client!]!
   client(id: ID!): Client!
@@ -119,7 +119,7 @@ type Query {
   user(id: ID!): User!
   categories: [Category!]!
   revalite: AuthResponse!
-  inventory(date: String = "2023-09-29"): [Inventory!]!
+  inventory(date: String = "2023-10-07"): [Inventory!]!
 }
 
 type Mutation {

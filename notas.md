@@ -27,3 +27,7 @@ NO se debe colocar en un NUMBER, ya que, nos generará un error. Además, no es 
 Cuando una dos modulos dependen cada uno del otro, entonces se le considera una Circular Dependency.
 Para resolverlo: https://docs.nestjs.com/fundamentals/circular-dependency
 - Ejemplo: detail-purchase-orders.module y purchase-oirders.module
+
+
+## Desintalado:
+- npm uninstall prettier eslint-config-prettier eslint-plugin-prettier

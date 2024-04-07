@@ -4,7 +4,10 @@ import { ProductsModule } from './products/products.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from './clients/clients.module';
 import { SupplierModule } from './supplier/supplier.module';
@@ -29,7 +32,13 @@ import { SeedModule } from './seed/seed.module';
       //! IMPORTANTE PARA USAR APOLLO:
       playground: false,
       plugins: [
-        ApolloServerPluginLandingPageLocalDefault(), //*con esto tenemos configurado Apollo
+        // Install a landing page plugin based on NODE_ENV
+        process.env.NODE_ENV === 'production'
+          ? ApolloServerPluginLandingPageProductionDefault({
+              graphRef: 'my-graph-id@my-graph-variant',
+              footer: false,
+            })
+          : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
       ],
       //!
     }),
